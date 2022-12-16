@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Sneaker = new Schema({
+const SneakerSchema = new Schema({
     id: {
         type: Schema.Types.ObjectId,
         required: true,
@@ -34,14 +34,11 @@ const Sneaker = new Schema({
         required: true
     },
     description: String,
-    inStock: {
-        type: Number,
-        min: 0,
-        required: [true, 'Please provide the number of sneakers in stock']
-    },
     favorites: {
         type: Number,
         default: 0,
         min: 0
     }
 })
+
+module.exports = mongoose.model('Sneaker', SneakerSchema)
