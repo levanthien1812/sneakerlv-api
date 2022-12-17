@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const SneakerSchema = new Schema({
     id: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
         unique: [true, 'This ID is already taken! Try another ID']
     },
