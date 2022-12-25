@@ -1,9 +1,10 @@
 const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
-const bodyParser  = require('body-parser')
+const bodyParser = require('body-parser')
 
 const sneakerRouter = require('./routes/sneakerRouter')
+const errorController = require('./controllers/errorController')
 
 const app = express()
 
@@ -20,6 +21,11 @@ app.use(cookieParser())
 // Serving static files
 app.use(express.static('public'))
 
+// Routes
 app.use('/api/sneakers', sneakerRouter)
+
+// Use global error handler
+// Must be put after routes
+app.use(errorController)
 
 module.exports = app

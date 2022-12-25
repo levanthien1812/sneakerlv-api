@@ -1,8 +1,11 @@
-const express = require('express')
-const sneakerRouter = express.Router()
+const express = require("express");
+const sneakerRouter = express.Router();
 
-const sneakerCtrler = require('../controllers/sneakerControllers')
+const sneakerCtrler = require("../controllers/sneakerController");
 
-sneakerRouter.post('/', sneakerCtrler.createSneaker)
+sneakerRouter
+  .route("/")
+  .post(sneakerCtrler.createSneaker)
+  .get(sneakerCtrler.getSneakers);
 
-module.exports = sneakerRouter
+module.exports = sneakerRouter;
