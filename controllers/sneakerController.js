@@ -10,8 +10,8 @@ exports.createSneaker = catchAsync(async (req, res, next) => {
 
     if (newSneaker) {
         res.status(200).json({
-            'status': 'success',
-            'data': newSneaker
+            status: 'success',
+            data: newSneaker
         })
     }
 })
@@ -19,11 +19,33 @@ exports.createSneaker = catchAsync(async (req, res, next) => {
 exports.getSneakers = catchAsync(async (req, res, next) => {
     const sneakersQuery = Sneaker.find()
     let features = (new ReadFeatures(sneakersQuery, req.query)).filter().sort().paginate()
-    
+
     const sneakers = await features.query
 
     return res.status(200).json({
-        'quantity': sneakers.length,
-        'data': sneakers
+        status: 'success',
+        quantity: sneakers.length,
+        data: sneakers
+    })
+})
+
+exports.getSneaker = catchAsync(async (req, res, next) => {
+    const sneaker = await Sneaker.find({slug: req.params.slug})
+
+    return res.status(200).json({
+        status: 'success',
+        data: sneaker
+    })
+})
+
+exports.updateSneaker = catchAsync(async (req, res, next) => {
+    
+})
+
+exports.deleteSneaker = catchAsync(async (req, res, next) => {
+    await Sneaker.findByIdAndDelete(req.params.id)
+
+    return res.status(200).json({
+        status: 'success',
     })
 })

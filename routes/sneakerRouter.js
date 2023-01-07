@@ -8,4 +8,10 @@ sneakerRouter
   .post(sneakerCtrler.createSneaker)
   .get(sneakerCtrler.getSneakers);
 
+sneakerRouter
+  .route("/:slug")
+  .get(sneakerCtrler.getSneaker)
+  .patch(sneakerCtrler.updateSneaker)
+  .delete(sneakerCtrler.deleteSneaker);
+
 module.exports = sneakerRouter;

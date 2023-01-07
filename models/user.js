@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide your email'],
         validate: [validator.isEmail, 'Please provide a valid email!'],
-        unique: true,
+        unique: [true, 'This email already exists'],
     },
     phoneNum: String,
     role: {
@@ -48,3 +48,5 @@ const UserSchema = new mongoose.Schema({
         select: false
     }
 })
+
+module.exports = mongoose.model('User', UserSchema)
