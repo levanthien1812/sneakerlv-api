@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const sneakerRouter = require('./routes/sneakerRouter')
 const errorController = require('./controllers/errorController')
 const userRouter = require('./routes/userRouter')
+const orderRouter = require('./routes/orderRouter')
 
 const app = express()
 
@@ -25,6 +26,7 @@ app.use(express.static('public'))
 // Routes
 app.use('/api/sneakers', sneakerRouter)
 app.use('/api/users', userRouter)
+app.use('/api/orders', orderRouter)
 
 // Use global error handler
 // Must be put after routes

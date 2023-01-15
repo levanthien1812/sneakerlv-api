@@ -43,7 +43,7 @@ exports.updateSneaker = catchAsync(async (req, res, next) => {
 })
 
 exports.deleteSneaker = catchAsync(async (req, res, next) => {
-    await Sneaker.findByIdAndDelete(req.params.id)
+    await Sneaker.deleteOne({slug: req.params.slug})
 
     return res.status(200).json({
         status: 'success',

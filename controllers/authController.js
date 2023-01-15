@@ -2,6 +2,7 @@ const catchAsync = require("../utils/catchAsync")
 const UserModel = require("../models/user")
 const AppError = require('../utils/appError')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -43,7 +44,7 @@ exports.logIn = catchAsync(async (req, res, next) => {
     const user = await UserModel.findOne({ email }).select('+password')
     if (!user) 
         return next(new AppError('There\'s no user with your email!', 404))
-    if (user.password != password)
+    if (!bcrypt.compare(password, user.password))
         return next(new AppError('Your password is incorrect! Try again.', 404))
     
     createSendToken(user, res)

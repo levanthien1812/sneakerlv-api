@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const bcrypt = require('bcrypt')
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -27,6 +28,9 @@ const UserSchema = new mongoose.Schema({
         maxLength: [20, 'Password must not be longer than 20 characters!'],
         required: [true, 'Please provide your password!']
     },
+    address: {
+        type: String,
+    },
     photo: String,
     passwordConfirm: {
         type: String,
@@ -47,6 +51,16 @@ const UserSchema = new mongoose.Schema({
         // Do not return this field
         select: false
     }
+})
+
+// Can not use arrow function because THIS is wrong
+UserSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next()
+    
+    this.password = await bcrypt.hash(this.password, 10)
+    this.passwordConfirm = undefined
+    
+    next()
 })
 
 module.exports = mongoose.model('User', UserSchema)
