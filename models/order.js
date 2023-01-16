@@ -46,4 +46,4 @@ OrderSchema.pre('save', async function (next) {
     next()
 })
 
-module.exports = new mongoose.model('Order', OrderSchema)
+module.exports = mongoose.model('Order', OrderSchema)

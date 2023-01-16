@@ -49,3 +49,37 @@ exports.logIn = catchAsync(async (req, res, next) => {
     
     createSendToken(user, res)
 })
+
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+    let token
+    // Check if token exists
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1]
+    } else if (req.cookies.jwt) {
+        token = req.cookies.jwt
+    } else {
+        return next(new AppError('You are not logged in! Please log in to access.', 400))
+    }
+
+    // Check if token is valid
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+    // Check if user still exists
+    const freshUser = await UserModel.findById(decoded.id)
+    if (!freshUser) {
+        return next(new AppError('The user belong to this token no longer exists!', 401))
+    }
+
+    req.user = freshUser
+    res.locals.user = freshUser
+    next()
+})
+
+exports.restrictsTo = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return next(new AppError('You are not allow to perform this action', 403))
+        }
+        next()
+    }
+}
