@@ -4,7 +4,7 @@ const Cart = require('./cart')
 const User = require('./user')
 
 const OrderSchema = new mongoose.Schema({
-    cart: [{
+    carts: [{
         type: mongoose.Schema.Types.ObjectId,
         require: true,
         ref: 'Cart'
@@ -16,33 +16,37 @@ const OrderSchema = new mongoose.Schema({
     totalPrice: {
         type: Number
     },
-    address: {
-        type: String,
-        require: true,
+    shippingInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ShippingInfo'
     },
     state: {
         type: String,
         enum: {
             values: ['Đơn hàng đã được đặt', 'Người gửi đang chuẩn bị hàng', 'Đang vận chuẩn', 'Giao hàng không thành công', 'Đã giao']
         }
+    },
+    paymentMethod: {
+        type: String,
+        require: [true, 'Please choose your payment method!'],
+        enum: {
+            values: ['Chuyển khoản', 'Thanh toán khi nhận hàng']
+        }
     }
 })
 
 OrderSchema.pre('save', async function (next) {
     // Calculate total price
-    this.populated('cart')
+    this.populate('carts')
 
     let sneakersPrice = 0
-    this.cart.forEach(async item =>  {
-        const sneaker = await Sneaker.findById(this.cart.sneaker)
+    this.carts.forEach(async item => {
+        const sneaker = await Sneaker.findById(item.sneaker)
         sneakersPrice += sneaker.promotionalPrice
     });
     
     this.totalPrice = this.shipPrice + sneakersPrice
 
-    // Get address of user
-    const user = await User.findById(this.cart.user)
-    this.address = user.address
     next()
 })
 

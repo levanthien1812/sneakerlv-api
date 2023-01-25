@@ -7,6 +7,7 @@ const sneakerRouter = require('./routes/sneakerRouter')
 const errorController = require('./controllers/errorController')
 const userRouter = require('./routes/userRouter')
 const orderRouter = require('./routes/orderRouter')
+const cartRouter = require('./routes/cartRouter')
 
 const app = express()
 
@@ -27,6 +28,7 @@ app.use(express.static('public'))
 app.use('/api/sneakers', sneakerRouter)
 app.use('/api/users', userRouter)
 app.use('/api/orders', orderRouter)
+app.use('/api/carts', cartRouter)
 
 // Use global error handler
 // Must be put after routes

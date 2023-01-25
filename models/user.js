@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcrypt')
 
+const shippingInfo = require('./shippingInfo')
+
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -61,6 +63,15 @@ UserSchema.pre('save', async function (next) {
     this.passwordConfirm = undefined
     
     next()
+})
+
+UserSchema.post('save',async function () {
+    await shippingInfo.create({
+        user: this.id,
+        name: this.name,
+        phoneNum: this.phoneNum,
+        address: this.address
+    })
 })
 
 module.exports = mongoose.model('User', UserSchema)
