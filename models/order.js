@@ -4,6 +4,11 @@ const Cart = require('./cart')
 const User = require('./user')
 
 const OrderSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        require: true,
+        ref: 'User'
+    },
     carts: [{
         type: mongoose.Schema.Types.ObjectId,
         require: true,
@@ -37,13 +42,11 @@ const OrderSchema = new mongoose.Schema({
 
 OrderSchema.pre('save', async function (next) {
     // Calculate total price
-    this.populate('carts')
-
     let sneakersPrice = 0
-    this.carts.forEach(async item => {
-        const sneaker = await Sneaker.findById(item.sneaker)
-        sneakersPrice += sneaker.promotionalPrice
-    });
+    await Promise.all(this.carts.map(async item => {
+        const cart = await Cart.findById(item).populate('sneaker')
+        sneakersPrice += cart.sneaker.promotionalPrice
+    }))
     
     this.totalPrice = this.shipPrice + sneakersPrice
 

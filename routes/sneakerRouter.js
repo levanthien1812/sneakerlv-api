@@ -7,7 +7,7 @@ const authController = require('../controllers/authController')
 sneakerRouter
   .route("/")
   .post(sneakerCtrler.createSneaker)
-  .get(sneakerCtrler.getSneakers);
+  .get(sneakerCtrler.getSneakers)
 
 sneakerRouter
   .route("/:slug")

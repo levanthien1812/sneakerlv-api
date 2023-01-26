@@ -6,4 +6,6 @@ userRouter.route('/sign-up').post(authController.signUp)
 
 userRouter.route('/log-in').post(authController.logIn)
 
+userRouter.route('/log-out').post(authController.logOut)
+
 module.exports = userRouter

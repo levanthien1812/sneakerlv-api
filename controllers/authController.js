@@ -50,6 +50,18 @@ exports.logIn = catchAsync(async (req, res, next) => {
     createSendToken(user, res)
 })
 
+exports.logOut = catchAsync(async (req, res, next) => {
+    res.cookie('jwt', '', {
+        httpOnly: true
+    })
+    req.user = null
+    res.locals.user = null
+
+    return res.status(200).json({
+        status: 'success'
+    })
+})
+
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
     let token
     // Check if token exists
