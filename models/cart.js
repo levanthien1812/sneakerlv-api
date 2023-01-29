@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Sneaker = require('./sneaker')
 
 const CartSchema = new mongoose.Schema({
     user: {
@@ -18,10 +19,28 @@ const CartSchema = new mongoose.Schema({
         default: 1,
         min: 1
     },
+    price: Number,
     active: {
         type: Boolean,
         default: true
     }
+})
+
+CartSchema.pre('save',async function (next) {
+    const sneaker = await Sneaker.findById(this.sneaker)
+    this.price = sneaker.promotionalPrice * this.quantity
+    next()
+})
+
+// CartSchema.pre(/^find/, function (next) {
+//     this.populate('sneaker')
+//     next()
+// })
+
+CartSchema.pre(/pdate/,async function (next) {
+    const sneaker = await Sneaker.findById(this.sneaker)
+    this.price = sneaker.promotionalPrice * this.quantity
+    next()
 })
 
 module.exports = mongoose.model('Cart', CartSchema)

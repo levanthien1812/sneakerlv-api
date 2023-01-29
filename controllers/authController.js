@@ -35,6 +35,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
 })
 
 exports.logIn = catchAsync(async (req, res, next) => {
+    // destructuring syntax
     const { email, password } = req.body
     
     if (!email || !password) {
@@ -87,6 +88,7 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
     next()
 })
 
+// Spread syntax 
 exports.restrictsTo = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {

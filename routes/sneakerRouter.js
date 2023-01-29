@@ -14,6 +14,6 @@ sneakerRouter
   .get(sneakerCtrler.getSneaker)
   .patch(sneakerCtrler.updateSneaker)
   .delete(sneakerCtrler.deleteSneaker)
-  .post(authController.isLoggedIn, authController.restrictsTo(['customer']), sneakerCtrler.createCart)
+  .post(authController.isLoggedIn, authController.restrictsTo('customer'), sneakerCtrler.createCart)
 
 module.exports = sneakerRouter;

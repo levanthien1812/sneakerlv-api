@@ -42,14 +42,13 @@ const OrderSchema = new mongoose.Schema({
 
 OrderSchema.pre('save', async function (next) {
     // Calculate total price
-    let sneakersPrice = 0
+    let cartsPrice = 0
     await Promise.all(this.carts.map(async item => {
-        const cart = await Cart.findById(item).populate('sneaker')
-        sneakersPrice += cart.sneaker.promotionalPrice
+        const cart = await Cart.findById(item)
+        cartsPrice += cart.price
     }))
     
-    this.totalPrice = this.shipPrice + sneakersPrice
-
+    this.totalPrice = this.shipPrice + cartsPrice
     next()
 })
 
