@@ -37,10 +37,4 @@ CartSchema.pre('save',async function (next) {
 //     next()
 // })
 
-CartSchema.pre(/pdate/,async function (next) {
-    const sneaker = await Sneaker.findById(this.sneaker)
-    this.price = sneaker.promotionalPrice * this.quantity
-    next()
-})
-
 module.exports = mongoose.model('Cart', CartSchema)

@@ -29,12 +29,13 @@ exports.deleteCarts = catchAsync(async (req, res, next) => {
 
 exports.updateCart = catchAsync(async (req, res, next) => {
     const {quantity, size} = req.body
-    const updatedCart = await Cart.findByIdAndUpdate(req.params.id, {
-        quantity, size
-    }, { new: true })
+    const cartToUpdate = await Cart.findById(req.params.id)
+    cartToUpdate.quantity = quantity
+    cartToUpdate.size = size
+    await cartToUpdate.save()
 
     return res.status(200).json({
         status: 'success',
-        data: updatedCart
+        data: cartToUpdate
     })
 })

@@ -38,27 +38,6 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.createShippingInfo = catchAsync(async (req, res, next) => {
-    const {name, address, phoneNum} = req.body
-    if (await ShippingInfo.exists({
-            address: address,
-            phoneNum: phoneNum
-    }))
-        return next(new AppError('Duplicated shipping address! Try again.'));
-    
-    const newShippingInfo = await ShippingInfo.create({
-        user: req.user._id,
-        name: name,
-        address: address,
-        phoneNum: phoneNum,
-    })
-
-    return res.status(200).json({
-        status: 'success',
-        data: newShippingInfo
-    })
-})
-
 exports.deleteOrder = catchAsync(async (req, res, next) => {
     const order = await Order.findById(req.params.id)
     // Không được hủy đơn hàng sau khi giao cho đơn vị vận chuyển
