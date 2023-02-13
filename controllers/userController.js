@@ -57,3 +57,12 @@ exports.updateShippingInfo = catchAsync(async (req, res, next) => {
         data: updatedShippingInfo
     })
 })
+
+exports.getUser = catchAsync(async (req, res, next) => {
+    const user = await UserModel.findById(req.user._id).select('name email phoneNum photo gender')
+
+    return res.status(200).json({
+        status: 'success',
+        data: user
+    })
+})

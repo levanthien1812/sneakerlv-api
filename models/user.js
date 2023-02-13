@@ -34,6 +34,13 @@ const UserSchema = new mongoose.Schema({
         type: String,
     },
     photo: String,
+    gender: {
+        type: String,
+        enum: {
+            values: ['female', 'male', 'other'],
+            default: 'femail'
+        }
+    },
     passwordConfirm: {
         type: String,
         required: [true, 'Please confirm your password'],

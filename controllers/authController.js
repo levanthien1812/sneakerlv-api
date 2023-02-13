@@ -45,14 +45,15 @@ exports.logIn = catchAsync(async (req, res, next) => {
     const user = await UserModel.findOne({ email }).select('+password')
     if (!user) 
         return next(new AppError('There\'s no user with your email!', 404))
-    if (!bcrypt.compare(password, user.password))
+    if (!(await bcrypt.compare(password, user.password)))
         return next(new AppError('Your password is incorrect! Try again.', 404))
     
     createSendToken(user, res)
 })
 
 exports.logOut = catchAsync(async (req, res, next) => {
-    res.cookie('jwt', '', {
+    res.cookie('jwt', '', { 
+        expiresIn: new Date(Date.now() + 10 * 1000),
         httpOnly: true
     })
     req.user = null
@@ -97,3 +98,33 @@ exports.restrictsTo = (...roles) => {
         next()
     }
 }
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+    const {
+        password,
+        newPassword,
+        newPasswordConfirm
+    } = req.body
+    if (!password || !newPassword || !newPasswordConfirm) {
+        return next(new AppError('Please provide enough information!', 404))
+    }
+
+    if (!(await bcrypt.compare(password, req.user.password))) {
+        return next(new AppError('Your current password is not correct! Try again.', 404))
+    }
+
+    if (newPassword !== newPasswordConfirm) {
+        return next(new AppError('Your new password and password confirm is not the same! Try again.'), 404)
+    }
+
+    await UserModel.findByIdAndUpdate(req.user._id, {
+        password: await bcrypt.hash(newPassword, 10)
+    })
+
+    res.status(200).json({
+        status: 'success',
+        message: 'You have updated your password successfully! Please login again!'
+    })
+
+    this.logOut(req, res, next)
+})
