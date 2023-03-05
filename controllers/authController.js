@@ -128,3 +128,13 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
     this.logOut(req, res, next)
 })
+
+exports.forgetPassword = (catchAsync(async (req, res, next) => {
+    const {email} = req.body
+    if (!email) 
+        return next(new AppError('Please provide your email address!', 404))
+    
+    if (!(await UserModel.exists({ email }))) {
+        return next(new AppError('This email doesn\'t belong to any account! Check your email again.', 404))
+    }
+}))

@@ -18,7 +18,17 @@ exports.createSneaker = catchAsync(async (req, res, next) => {
 })
 
 exports.getSneakers = catchAsync(async (req, res, next) => {
-    const sneakersQuery = Sneaker.find()
+    let sneakersQuery
+    // Dont use await so find() return a query
+    // query is executed later
+    if (req.query.search) {
+        sneakersQuery = Sneaker.find({
+            name: { $regex: req.query.search, $options: 'i' }
+        })
+    } else {
+        sneakersQuery = Sneaker.find()
+    }
+    
     let features = (new ReadFeatures(sneakersQuery, req.query)).filter().sort().paginate()
 
     const sneakers = await features.query
@@ -78,4 +88,22 @@ exports.createCart = catchAsync(async (req, res, next) => {
             data: cart,
         })
     }
+})
+
+exports.favoriteSneaker = catchAsync(async (req, res, next) => {
+    const sneaker = await Sneaker.findOne({ slug: req.params.slug })
+    let favorites = sneaker.favorites
+    if (!favorites.includes(req.user.id)) {
+        favorites.push(req.user.id)
+    } else {
+        const index = favorites.indexOf(req.user.id)
+        favorites.splice(index, 1)
+    }
+
+    await sneaker.save()
+
+    return res.status(202).json({
+        status: 'success',
+        quantity: sneaker.favorites.length
+    })
 })

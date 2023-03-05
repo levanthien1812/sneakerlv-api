@@ -35,11 +35,10 @@ const SneakerSchema = new Schema({
         required: true
     },
     description: String,
-    favorites: {
-        type: Number,
-        default: 0,
-        min: 0
-    },
+    favorites: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     createdAt: {
         type: Date,
         default: Date.now

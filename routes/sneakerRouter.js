@@ -12,8 +12,12 @@ sneakerRouter
 sneakerRouter
   .route("/:slug")
   .get(sneakerCtrler.getSneaker)
-  .patch(sneakerCtrler.updateSneaker)
-  .delete(sneakerCtrler.deleteSneaker)
+  .patch(authController.isLoggedIn, sneakerCtrler.updateSneaker)
+  .delete(authController.isLoggedIn, sneakerCtrler.deleteSneaker)
   .post(authController.isLoggedIn, authController.restrictsTo('customer'), sneakerCtrler.createCart)
+
+sneakerRouter
+  .route("/:slug/favorite")
+  .post(authController.isLoggedIn, sneakerCtrler.favoriteSneaker)
 
 module.exports = sneakerRouter;
