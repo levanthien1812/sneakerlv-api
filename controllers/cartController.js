@@ -34,8 +34,12 @@ exports.updateCart = catchAsync(async (req, res, next) => {
     if (quantity) cartToUpdate.quantity = quantity
     if (size) cartToUpdate.size = size
     
-    await cartToUpdate.save()
-
+    if (cartToUpdate.quantity === 0) {
+        await Cart.findByIdAndDelete(cartToUpdate.id)
+    } else {
+        await cartToUpdate.save()
+    }
+    
     return res.status(200).json({
         status: 'success',
         data: cartToUpdate

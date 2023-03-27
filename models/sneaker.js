@@ -43,6 +43,12 @@ const SneakerSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    rating: {
+        type: Number,
+        default: 5,
+        min: 0,
+        max: 5,
+    },
     slug: String,
 })
 

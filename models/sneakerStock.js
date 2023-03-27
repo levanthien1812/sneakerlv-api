@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const SneakerSize = mongoose.Schema({
+const SneakerStock = mongoose.Schema({
     sneaker: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Sneaker'
@@ -11,9 +11,10 @@ const SneakerSize = mongoose.Schema({
             values: this.sneaker.sizes
         }
     },
-    inStock: {
+    // quantity of sneaker in stock
+    quantity: {
         type: Number,
         min: 0,
-        required: [true, 'Please provide the number of sneaker in stock']
+        required: [true, 'Please provide the number of sneakers in stock']
     }
 })
