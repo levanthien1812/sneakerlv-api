@@ -1,21 +1,22 @@
-const express = require("express");
+import express from "express";
 const sneakerRouter = express.Router();
 
-const { createReview } = require("../controllers/reviewController");
-const { isLoggedIn, restrictsTo } = require("../controllers/authController")
-const {
+import { createReview } from "../controllers/reviewController.js";
+import { isLoggedIn, restrictsTo } from "../controllers/authController.js"
+import {
   createSneaker,
   getSneaker,
   getSneakers,
   updateSneaker,
   deleteSneaker,
   createCart,
-  favoriteSneaker
-} = require("../controllers/sneakerController")
+  favoriteSneaker,
+  uploadSneakerImages
+} from "../controllers/sneakerController.js"
 
 sneakerRouter
   .route("/")
-  .post(createSneaker)
+  .post(uploadSneakerImages, createSneaker)
   .get(getSneakers)
 
 sneakerRouter
@@ -31,4 +32,4 @@ sneakerRouter
 
 sneakerRouter.route('/:slug/reviews').post(isLoggedIn, createReview)
 
-module.exports = sneakerRouter;
+export default sneakerRouter;

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const slugify = require('slugify')
+import mongoose from "mongoose"
+import slugify from "slugify"
 const Schema = mongoose.Schema
 
 const SneakerSchema = new Schema({
@@ -25,7 +25,6 @@ const SneakerSchema = new Schema({
     price: Number,
     promotionalPrice: {
         type: Number,
-        max: this.price,
         min: 0,
         required: [true, 'Please provide the price of sneaker!']
     },
@@ -57,4 +56,4 @@ SneakerSchema.pre('save', function(next) {
     next()
 })
 
-module.exports = mongoose.model('Sneaker', SneakerSchema)
+export default mongoose.model('Sneaker', SneakerSchema)

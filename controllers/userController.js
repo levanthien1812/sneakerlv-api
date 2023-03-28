@@ -1,9 +1,9 @@
-const catchAsync = require("../utils/catchAsync");
-const UserModel = require("../models/user")
-const ShippingInfo = require('../models/shippingInfo');
-const AppError = require("../utils/appError");
+import catchAsync from "../utils/catchAsync.js";
+import UserModel from "../models/user.js"
+import ShippingInfo from '../models/shippingInfo.js';
+import AppError from "../utils/appError.js";
 
-exports.createShippingInfo = catchAsync(async (req, res, next) => {
+export const createShippingInfo = catchAsync(async (req, res, next) => {
     const {name, address, phoneNum} = req.body
     if (await ShippingInfo.exists({
             address: address,
@@ -24,7 +24,7 @@ exports.createShippingInfo = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.getShippingInfo = catchAsync(async (req, res, next) => {
+export const getShippingInfo = catchAsync(async (req, res, next) => {
     const shippingInfos = await ShippingInfo.find({ user: req.user._id })
     
     return res.status(200).json({
@@ -34,7 +34,7 @@ exports.getShippingInfo = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.deleteShippingInfo = catchAsync(async (req, res, next) => {
+export const deleteShippingInfo = catchAsync(async (req, res, next) => {
     await ShippingInfo.findByIdAndDelete(req.params.id)
 
     return res.status(200).json({
@@ -42,7 +42,7 @@ exports.deleteShippingInfo = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.updateShippingInfo = catchAsync(async (req, res, next) => {
+export const updateShippingInfo = catchAsync(async (req, res, next) => {
     const {address, phoneNum} = req.body
     if (await ShippingInfo.exists({
             address: address,
@@ -58,7 +58,7 @@ exports.updateShippingInfo = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.getUser = catchAsync(async (req, res, next) => {
+export const getUser = catchAsync(async (req, res, next) => {
     const user = await UserModel.findById(req.user._id).select('name email phoneNum photo gender')
 
     return res.status(200).json({

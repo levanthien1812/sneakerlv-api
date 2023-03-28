@@ -1,11 +1,11 @@
-const express = require('express')
+import express from 'express'
+import { isLoggedIn } from '../controllers/authController.js'
+import { deleteCarts, getAllCarts, updateCart } from '../controllers/cartController.js'
 const cartRouter = express.Router()
-const cartController = require('../controllers/cartController')
-const authController = require('../controllers/authController')
 
-cartRouter.route('/').get(authController.isLoggedIn, cartController.getAllCarts)
-    .delete(authController.isLoggedIn, cartController.deleteCarts)
+cartRouter.route('/').get(isLoggedIn, getAllCarts)
+    .delete(isLoggedIn, deleteCarts)
 
-cartRouter.route('/:id').patch(authController.isLoggedIn, cartController.updateCart)
+cartRouter.route('/:id').patch(isLoggedIn, updateCart)
 
-module.exports = cartRouter
+export default cartRouter

@@ -1,8 +1,8 @@
-const catchAsync = require("../utils/catchAsync")
-const UserModel = require("../models/user")
-const AppError = require('../utils/appError')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
+import catchAsync from "../utils/catchAsync.js"
+import UserModel from "../models/user.js"
+import AppError from '../utils/appError.js'
 
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -29,12 +29,12 @@ const createSendToken = (user, res) => {
     })
 }
 
-exports.signUp = catchAsync(async (req, res, next) => {
+export const signUp = catchAsync(async (req, res, next) => {
     const newUser = await UserModel.create(req.body)
     createSendToken(newUser, res)
 })
 
-exports.logIn = catchAsync(async (req, res, next) => {
+export const logIn = catchAsync(async (req, res, next) => {
     // destructuring syntax
     const { email, password } = req.body
     
@@ -51,7 +51,7 @@ exports.logIn = catchAsync(async (req, res, next) => {
     createSendToken(user, res)
 })
 
-exports.logOut = catchAsync(async (req, res, next) => {
+export const logOut = catchAsync(async (req, res, next) => {
     res.cookie('jwt', '', { 
         expiresIn: new Date(Date.now() + 10 * 1000),
         httpOnly: true
@@ -64,7 +64,7 @@ exports.logOut = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+export const isLoggedIn = catchAsync(async (req, res, next) => {
     let token
     // Check if token exists
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -90,7 +90,7 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
 })
 
 // Spread syntax 
-exports.restrictsTo = (...roles) => {
+export const restrictsTo = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
             return next(new AppError('You are not allow to perform this action', 403))
@@ -99,7 +99,7 @@ exports.restrictsTo = (...roles) => {
     }
 }
 
-exports.updatePassword = catchAsync(async (req, res, next) => {
+export const updatePassword = catchAsync(async (req, res, next) => {
     const {
         password,
         newPassword,
@@ -129,7 +129,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     this.logOut(req, res, next)
 })
 
-exports.forgetPassword = (catchAsync(async (req, res, next) => {
+export const forgetPassword = (catchAsync(async (req, res, next) => {
     const {email} = req.body
     if (!email) 
         return next(new AppError('Please provide your email address!', 404))

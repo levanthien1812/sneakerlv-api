@@ -1,8 +1,8 @@
-const mongoose = require('mongoose')
-const validator = require('validator')
-const bcrypt = require('bcrypt')
+import mongoose from 'mongoose'
+import validator from 'validator'
+import bcrypt from 'bcrypt'
 
-const shippingInfo = require('./shippingInfo')
+import shippingInfo from './shippingInfo.js'
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -81,4 +81,4 @@ UserSchema.post('save',async function () {
     })
 })
 
-module.exports = mongoose.model('User', UserSchema)
+export default mongoose.model('User', UserSchema)

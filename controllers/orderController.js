@@ -1,10 +1,10 @@
-const catchAsync = require('../utils/catchAsync')
-const AppError = require('../utils/appError')
-const Order = require('../models/order')
-const Cart = require('../models/cart')
-const ShippingInfo = require('../models/shippingInfo')
+import catchAsync from '../utils/catchAsync.js'
+import AppError from '../utils/appError.js'
+import Order from '../models/order.js'
+import Cart from '../models/cart.js'
+import ShippingInfo from '../models/shippingInfo.js'
 
-exports.createOrder = catchAsync(async (req, res, next) => {
+export const createOrder = catchAsync(async (req, res, next) => {
     // Splits carts string of ids into arrays of ids
     const ids = req.query.carts.split(',')
 
@@ -28,7 +28,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.getAllOrders = catchAsync(async (req, res, next) => {
+export const getAllOrders = catchAsync(async (req, res, next) => {
     const orders = await Order.find({ user: req.user._id })
     
     return res.status(200).json({
@@ -38,7 +38,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.deleteOrder = catchAsync(async (req, res, next) => {
+export const deleteOrder = catchAsync(async (req, res, next) => {
     const order = await Order.findById(req.params.id)
     // Không được hủy đơn hàng sau khi giao cho đơn vị vận chuyển
     if (order.state.includes('giao cho đơn vị vận chuyển')) {

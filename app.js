@@ -1,19 +1,14 @@
-const express = require('express')
-const path = require('path')
-const cookieParser = require('cookie-parser')
-const bodyParser = require('body-parser')
-
-const sneakerRouter = require('./routes/sneakerRouter')
-const errorController = require('./controllers/errorController')
-const userRouter = require('./routes/userRouter')
-const orderRouter = require('./routes/orderRouter')
-const cartRouter = require('./routes/cartRouter')
+import express from 'express'
+import path from 'path'
+import cookieParser from 'cookie-parser'
+import bodyParser from 'body-parser'
+import sneakerRouter from './routes/sneakerRouter.js'
+import userRouter from './routes/userRouter.js'
+import orderRouter from './routes/orderRouter.js'
+import cartRouter from './routes/cartRouter.js'
+import errorController from './controllers/errorController.js'
 
 const app = express()
-
-// Use view engine
-app.set('view engine', 'pug')
-app.set('views', path.join(__dirname, 'views'))
 
 // Body-parser and cookie-parser
 app.use(bodyParser.json())
@@ -34,4 +29,4 @@ app.use('/api/carts', cartRouter)
 // Must be put after routes
 app.use(errorController)
 
-module.exports = app
+export default app

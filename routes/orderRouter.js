@@ -1,9 +1,10 @@
-const express = require('express')
+import express from 'express'
+import { isLoggedIn } from '../controllers/authController.js'
+import { createOrder, getAllOrders } from '../controllers/orderController.js'
+
 const orderRouter = express.Router()
-const authController = require('../controllers/authController')
-const orderController = require('../controllers/orderController')
 
-orderRouter.route('/').get(authController.isLoggedIn, orderController.getAllOrders)
-    .post(authController.isLoggedIn, orderController.createOrder)
+orderRouter.route('/').get(isLoggedIn, getAllOrders)
+    .post(isLoggedIn, createOrder)
 
-module.exports = orderRouter
+export default orderRouter

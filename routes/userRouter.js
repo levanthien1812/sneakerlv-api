@@ -1,19 +1,32 @@
-const express = require('express')
+import express from 'express'
+import {
+    isLoggedIn,
+    logIn,
+    logOut,
+    signUp,
+    updatePassword
+} from '../controllers/authController.js'
+import {
+    createShippingInfo,
+    deleteShippingInfo,
+    getShippingInfo,
+    getUser,
+    updateShippingInfo
+} from '../controllers/userController.js'
+
 const userRouter = express.Router()
-const authController = require('../controllers/authController')
-const userController = require('../controllers/userController')
 
-userRouter.route('/sign-up').post(authController.signUp)
-userRouter.route('/log-in').post(authController.logIn)
-userRouter.route('/log-out').post(authController.logOut)
+userRouter.route('/sign-up').post(signUp)
+userRouter.route('/log-in').post(logIn)
+userRouter.route('/log-out').post(logOut)
 
-userRouter.route('/shipping-info').post(authController.isLoggedIn, userController.createShippingInfo)
-    .get(authController.isLoggedIn, userController.getShippingInfo)
+userRouter.route('/shipping-info').post(isLoggedIn, createShippingInfo)
+    .get(isLoggedIn, getShippingInfo)
 
-userRouter.route('/shipping-info/:id').patch(authController.isLoggedIn, userController.updateShippingInfo)
-    .delete(authController.isLoggedIn, userController.deleteShippingInfo)
+userRouter.route('/shipping-info/:id').patch(isLoggedIn, updateShippingInfo)
+    .delete(isLoggedIn, deleteShippingInfo)
 
-userRouter.route('/account/profile').get(authController.isLoggedIn, userController.getUser)
-userRouter.route('/account/update-password').post(authController.isLoggedIn, authController.updatePassword)
+userRouter.route('/account/profile').get(isLoggedIn, getUser)
+userRouter.route('/account/update-password').post(isLoggedIn, updatePassword)
 
-module.exports = userRouter
+export default userRouter

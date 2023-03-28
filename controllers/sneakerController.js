@@ -1,11 +1,42 @@
-const mongoose = require('mongoose')
-const ReadFeatures = require('../utils/readFeatures')
+import multer from 'multer'
+import ReadFeatures from '../utils/readFeatures.js'
+import Sneaker from '../models/sneaker.js'
+import catchAsync from '../utils/catchAsync.js'
+import Cart from '../models/cart.js'
+import AppError from '../utils/appError.js'
 
-const Sneaker = require('../models/sneaker')
-const catchAsync = require('../utils/catchAsync')
-const Cart = require('../models/cart')
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '/public/images/sneakers')
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = `sneaker-${Date.now()}-${Math.round(Math.random() * 1E5)}`
+        cb(null, file.fieldname + uniqueSuffix)
+    }
+})
 
-exports.createSneaker = catchAsync(async (req, res, next) => {
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+        cb(null, true)
+    } else {
+        cb(new AppError('Not an image! Please select only images'))
+    }
+}
+
+export const uploadSneakerImages = multer({
+    storage,
+    fileFilter
+}).fields([{
+        name: 'coverImage',
+        maxCount: 1
+    },
+    {
+        name: 'images',
+        maxCount: 5
+    }
+])
+
+export const createSneaker = catchAsync(async (req, res, next) => {
     const sneakerReq = req.body
     const newSneaker = await Sneaker.create(sneakerReq)
 
@@ -17,18 +48,21 @@ exports.createSneaker = catchAsync(async (req, res, next) => {
     }
 })
 
-exports.getSneakers = catchAsync(async (req, res, next) => {
+export const getSneakers = catchAsync(async (req, res, next) => {
     let sneakersQuery
     // Dont use await so find() return a query
     // query is executed later
     if (req.query.search) {
         sneakersQuery = Sneaker.find({
-            name: { $regex: req.query.search, $options: 'i' }
+            name: {
+                $regex: req.query.search,
+                $options: 'i'
+            }
         })
     } else {
         sneakersQuery = Sneaker.find()
     }
-    
+
     let features = (new ReadFeatures(sneakersQuery, req.query)).filter().sort().paginate()
 
     const sneakers = await features.query
@@ -40,8 +74,10 @@ exports.getSneakers = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.getSneaker = catchAsync(async (req, res, next) => {
-    const sneaker = await Sneaker.find({slug: req.params.slug})
+export const getSneaker = catchAsync(async (req, res, next) => {
+    const sneaker = await Sneaker.find({
+        slug: req.params.slug
+    })
 
     return res.status(200).json({
         status: 'success',
@@ -49,20 +85,24 @@ exports.getSneaker = catchAsync(async (req, res, next) => {
     })
 })
 
-exports.updateSneaker = catchAsync(async (req, res, next) => {
-    
+export const updateSneaker = catchAsync(async (req, res, next) => {
+
 })
 
-exports.deleteSneaker = catchAsync(async (req, res, next) => {
-    await Sneaker.deleteOne({slug: req.params.slug})
+export const deleteSneaker = catchAsync(async (req, res, next) => {
+    await Sneaker.deleteOne({
+        slug: req.params.slug
+    })
 
     return res.status(200).json({
         status: 'success',
     })
 })
 
-exports.createCart = catchAsync(async (req, res, next) => {
-    const sneaker = await Sneaker.findOne({ slug: req.params.slug })
+export const createCart = catchAsync(async (req, res, next) => {
+    const sneaker = await Sneaker.findOne({
+        slug: req.params.slug
+    })
     const cartCheck = await Cart.findOne({
         sneaker: sneaker._id,
         user: req.user._id,
@@ -72,7 +112,9 @@ exports.createCart = catchAsync(async (req, res, next) => {
     if (cartCheck) {
         cart = await Cart.findByIdAndUpdate(cartCheck._id, {
             quantity: cartCheck.quantity + req.body.quantity
-        }, { new: true })
+        }, {
+            new: true
+        })
     } else {
         cart = await Cart.create({
             sneaker: sneaker._id,
@@ -90,8 +132,10 @@ exports.createCart = catchAsync(async (req, res, next) => {
     }
 })
 
-exports.favoriteSneaker = catchAsync(async (req, res, next) => {
-    const sneaker = await Sneaker.findOne({ slug: req.params.slug })
+export const favoriteSneaker = catchAsync(async (req, res, next) => {
+    const sneaker = await Sneaker.findOne({
+        slug: req.params.slug
+    })
     let favorites = sneaker.favorites
     if (!favorites.includes(req.user.id)) {
         favorites.push(req.user.id)

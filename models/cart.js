@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const Sneaker = require('./sneaker')
+import mongoose from "mongoose"
+import Sneaker from './sneaker.js'
 
 const CartSchema = new mongoose.Schema({
     user: {
@@ -37,4 +37,4 @@ CartSchema.pre('save',async function (next) {
 //     next()
 // })
 
-module.exports = mongoose.model('Cart', CartSchema)
+export default mongoose.model('Cart', CartSchema)

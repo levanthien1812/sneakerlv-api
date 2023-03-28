@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const slugify = require('slugify')
+import mongoose from "mongoose"
+import slugify from "slugify"
 
 const BrandSchema = mongoose.Schema({
     name: {
@@ -14,4 +14,4 @@ BrandSchema.pre('save', function (next) {
     next()
 })
 
-module.exports = new mongoose.model('Brand', BrandSchema)
+export default new mongoose.model('Brand', BrandSchema)

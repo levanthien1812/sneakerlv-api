@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from "mongoose"
 
 const ShippingInfoSchema = new mongoose.Schema({
     name: {
@@ -19,4 +19,4 @@ const ShippingInfoSchema = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('ShippinInfo', ShippingInfoSchema)
+export default mongoose.model('ShippinInfo', ShippingInfoSchema)

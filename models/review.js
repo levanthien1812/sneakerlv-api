@@ -11,7 +11,7 @@ const ReviewSchema = new Schema({
         type: String,
         require: [true, 'Please provide content of review']
     },
-    image: [{
+    images: [{
         type: String
     }],
     rating: {

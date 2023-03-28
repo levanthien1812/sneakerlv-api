@@ -38,4 +38,4 @@ class ReadFeatures {
     }
 }
 
-module.exports = ReadFeatures
+export default ReadFeatures
