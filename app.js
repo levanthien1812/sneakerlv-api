@@ -7,6 +7,8 @@ import userRouter from './routes/userRouter.js'
 import orderRouter from './routes/orderRouter.js'
 import cartRouter from './routes/cartRouter.js'
 import errorController from './controllers/errorController.js'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
 
 const app = express()
 
@@ -17,7 +19,9 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }))
 app.use(cookieParser())
 
 // Serving static files
-app.use(express.static('public'))
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+app.use(express.static(path.join(__dirname, './public')))
 
 // Routes
 app.use('/api/sneakers', sneakerRouter)

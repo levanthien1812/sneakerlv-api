@@ -7,11 +7,12 @@ import AppError from '../utils/appError.js'
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '/public/images/sneakers')
+        cb(null, './public/images/sneakers')
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = `sneaker-${Date.now()}-${Math.round(Math.random() * 1E5)}`
-        cb(null, file.fieldname + uniqueSuffix)
+        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E5)}.jpg`
+        const fileName = file.fieldname + '-' + uniqueSuffix
+        cb(null, fileName)
     }
 })
 
@@ -23,7 +24,7 @@ const fileFilter = (req, file, cb) => {
     }
 }
 
-export const uploadSneakerImages = multer({
+const upload = multer({
     storage,
     fileFilter
 }).fields([{
@@ -35,6 +36,27 @@ export const uploadSneakerImages = multer({
         maxCount: 5
     }
 ])
+
+export const uploadSneakerImages = (req, res, next) => {
+    upload(req, res, err => {
+        if (err) {
+            next(err)
+        } else {
+            if (req.files) {
+                if (req.files.coverImage) {
+                    req.body.coverImage = req.files.coverImage[0].filename
+                }
+                if (req.files.images) {
+                    req.body.images = []
+                    req.files.images.map(img => {
+                        req.body.images.push(img.filename)
+                    })
+                }
+            }
+            next()
+        }
+    })
+}
 
 export const createSneaker = catchAsync(async (req, res, next) => {
     const sneakerReq = req.body
