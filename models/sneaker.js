@@ -12,21 +12,9 @@ const SneakerSchema = new Schema({
         type: String,
         required: [true, 'Please provide the name of sneaker!']
     },
-    sizes: [{
-        type: Number,
-        min: 0,
-        required: [true, 'Please provide the sizes of sneaker!']
-    }],
     coverImage: {
         type: String,
         require: [true, 'Please provide the cover image of sneaker!']
-    },
-    images: [String],
-    price: Number,
-    promotionalPrice: {
-        type: Number,
-        min: 0,
-        required: [true, 'Please provide the price of sneaker!']
     },
     brand: {
         type: Schema.Types.ObjectId,
@@ -38,10 +26,6 @@ const SneakerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
     rating: {
         type: Number,
         default: 5,

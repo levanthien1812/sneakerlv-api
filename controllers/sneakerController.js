@@ -59,7 +59,7 @@ export const uploadSneakerImages = (req, res, next) => {
 }
 
 export const createSneaker = catchAsync(async (req, res, next) => {
-    const sneakerReq = req.body
+    const sneakerReq = req.body.sneaker
     const newSneaker = await Sneaker.create(sneakerReq)
 
     if (newSneaker) {
@@ -72,8 +72,8 @@ export const createSneaker = catchAsync(async (req, res, next) => {
 
 export const getSneakers = catchAsync(async (req, res, next) => {
     let sneakersQuery
-    // Dont use await so find() return a query
-    // query is executed later
+    // Dont use await so that find() returns a query
+    // query will be executed later
     if (req.query.search) {
         sneakersQuery = Sneaker.find({
             name: {
@@ -119,39 +119,6 @@ export const deleteSneaker = catchAsync(async (req, res, next) => {
     return res.status(200).json({
         status: 'success',
     })
-})
-
-export const createCart = catchAsync(async (req, res, next) => {
-    const sneaker = await Sneaker.findOne({
-        slug: req.params.slug
-    })
-    const cartCheck = await Cart.findOne({
-        sneaker: sneaker._id,
-        user: req.user._id,
-        size: req.body.size
-    })
-    let cart
-    if (cartCheck) {
-        cart = await Cart.findByIdAndUpdate(cartCheck._id, {
-            quantity: cartCheck.quantity + req.body.quantity
-        }, {
-            new: true
-        })
-    } else {
-        cart = await Cart.create({
-            sneaker: sneaker._id,
-            user: req.user._id,
-            size: req.body.size,
-            quantity: req.body.quantity
-        })
-    }
-
-    if (cart) {
-        return res.status(200).json({
-            status: 'success',
-            data: cart,
-        })
-    }
 })
 
 export const favoriteSneaker = catchAsync(async (req, res, next) => {

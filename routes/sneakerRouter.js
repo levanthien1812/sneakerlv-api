@@ -9,10 +9,11 @@ import {
   getSneakers,
   updateSneaker,
   deleteSneaker,
-  createCart,
   favoriteSneaker,
   uploadSneakerImages
 } from "../controllers/sneakerController.js"
+
+import { createCart } from "../controllers/cartController.js";
 
 sneakerRouter
   .route("/")
