@@ -1,8 +1,13 @@
 import express from "express";
 const sneakerRouter = express.Router();
 
-import { createReview } from "../controllers/reviewController.js";
-import { isLoggedIn, restrictsTo } from "../controllers/authController.js"
+import {
+  createReview
+} from "../controllers/reviewController.js";
+import {
+  isLoggedIn,
+  restrictsTo
+} from "../controllers/authController.js"
 import {
   createSneaker,
   getSneaker,
@@ -13,12 +18,22 @@ import {
   uploadSneakerImages
 } from "../controllers/sneakerController.js"
 
-import { createCart } from "../controllers/cartController.js";
+import {
+  createCart
+} from "../controllers/cartController.js";
+import {
+  createSneakerCategory,
+  uploadCategoryImage
+} from "../controllers/sneakerCategoryController.js";
 
 sneakerRouter
   .route("/")
-  .post(uploadSneakerImages, createSneaker)
+  .post(isLoggedIn, uploadSneakerImages, createSneaker)
   .get(getSneakers)
+
+sneakerRouter
+  .route('/categories')
+  .post(isLoggedIn, uploadCategoryImage, createSneakerCategory)
 
 sneakerRouter
   .route("/:slug")

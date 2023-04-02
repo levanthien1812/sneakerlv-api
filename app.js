@@ -9,8 +9,11 @@ import cartRouter from './routes/cartRouter.js'
 import errorController from './controllers/errorController.js'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
+import cors from 'cors'
 
 const app = express()
+
+app.use(cors())
 
 // Body-parser and cookie-parser
 app.use(bodyParser.json())

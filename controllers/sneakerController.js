@@ -4,10 +4,12 @@ import Sneaker from '../models/sneaker.js'
 import catchAsync from '../utils/catchAsync.js'
 import Cart from '../models/cart.js'
 import AppError from '../utils/appError.js'
+import sneakerCategory from '../models/sneakerCategory.js'
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './public/images/sneakers')
+        const sneakerId = req.body.id
+        cb(null, './public/images/sneakers/' + sneakerId)
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E5)}.jpg`
@@ -59,7 +61,7 @@ export const uploadSneakerImages = (req, res, next) => {
 }
 
 export const createSneaker = catchAsync(async (req, res, next) => {
-    const sneakerReq = req.body.sneaker
+    const sneakerReq = req.body
     const newSneaker = await Sneaker.create(sneakerReq)
 
     if (newSneaker) {
@@ -86,7 +88,6 @@ export const getSneakers = catchAsync(async (req, res, next) => {
     }
 
     let features = (new ReadFeatures(sneakersQuery, req.query)).filter().sort().paginate()
-
     const sneakers = await features.query
 
     return res.status(200).json({
@@ -101,9 +102,16 @@ export const getSneaker = catchAsync(async (req, res, next) => {
         slug: req.params.slug
     })
 
+    const sneakerCategories = await sneakerCategories.find({
+        sneaker: sneaker.id
+    })
+
     return res.status(200).json({
         status: 'success',
-        data: sneaker
+        data: {
+            sneaker,
+            sneakerCategories
+        }
     })
 })
 
