@@ -28,12 +28,12 @@ import {
 
 sneakerRouter
   .route("/")
-  .post(isLoggedIn, uploadSneakerImages, createSneaker)
+  .post(uploadSneakerImages, createSneaker)
   .get(getSneakers)
 
 sneakerRouter
   .route('/categories')
-  .post(isLoggedIn, uploadCategoryImage, createSneakerCategory)
+  .post(uploadCategoryImage, createSneakerCategory)
 
 sneakerRouter
   .route("/:slug")

@@ -6,7 +6,11 @@ const BrandSchema = mongoose.Schema({
         type: String,
         required: [true, 'Please provide the name of brand']
     },
-    slug: String
+    slug: String,
+    image: {
+        type: String,
+        // require: [true, 'Please provide image to brand']
+    }
 })
 
 BrandSchema.pre('save', function (next) {

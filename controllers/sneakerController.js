@@ -5,11 +5,14 @@ import catchAsync from '../utils/catchAsync.js'
 import Cart from '../models/cart.js'
 import AppError from '../utils/appError.js'
 import sneakerCategory from '../models/sneakerCategory.js'
+import fse from 'fs-extra'
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const sneakerId = req.body.id
-        cb(null, './public/images/sneakers/' + sneakerId)
+        const path = './public/images/sneakers/' + sneakerId;
+        fse.mkdirsSync(path)
+        cb(null, path)
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E5)}.jpg`

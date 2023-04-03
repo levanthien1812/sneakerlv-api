@@ -7,6 +7,7 @@ import userRouter from './routes/userRouter.js'
 import orderRouter from './routes/orderRouter.js'
 import cartRouter from './routes/cartRouter.js'
 import errorController from './controllers/errorController.js'
+import brandRouter from './routes/brandRouter.js'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
@@ -31,6 +32,7 @@ app.use('/api/sneakers', sneakerRouter)
 app.use('/api/users', userRouter)
 app.use('/api/orders', orderRouter)
 app.use('/api/carts', cartRouter)
+app.use('/api/brands', brandRouter)
 
 // Use global error handler
 // Must be put after routes
