@@ -5,7 +5,9 @@ import UserModel from "../models/user.js"
 import AppError from '../utils/appError.js'
 
 const signToken = id => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+    return jwt.sign({
+        id
+    }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
     })
 }
@@ -34,25 +36,54 @@ export const signUp = catchAsync(async (req, res, next) => {
     createSendToken(newUser, res)
 })
 
+export const createGoogleUser = catchAsync(async (req, res, next) => {
+    const {
+        name,
+        email,
+        picture
+    } = req.body
+    const user = await UserModel.findOne({
+        email
+    })
+    let newUser
+    if (!user) {
+        newUser = await UserModel.create({
+            name,
+            email,
+            photo: picture,
+            password: email,
+            passwordConfirm: email,
+            isGoogleAccount: true
+        })
+    }
+
+    createSendToken(newUser, res)
+})
+
 export const logIn = catchAsync(async (req, res, next) => {
     // destructuring syntax
-    const { email, password } = req.body
-    
+    const {
+        email,
+        password
+    } = req.body
+
     if (!email || !password) {
         return next(new AppError('Please provide your email and password!', 404))
     }
 
-    const user = await UserModel.findOne({ email }).select('+password')
-    if (!user) 
+    const user = await UserModel.findOne({
+        email
+    }).select('+password')
+    if (!user)
         return next(new AppError('There\'s no user with your email!', 404))
     if (!(await bcrypt.compare(password, user.password)))
         return next(new AppError('Your password is incorrect! Try again.', 404))
-    
+
     createSendToken(user, res)
 })
 
 export const logOut = catchAsync(async (req, res, next) => {
-    res.cookie('jwt', '', { 
+    res.cookie('jwt', '', {
         expiresIn: new Date(Date.now() + 10 * 1000),
         httpOnly: true
     })
@@ -130,11 +161,15 @@ export const updatePassword = catchAsync(async (req, res, next) => {
 })
 
 export const forgetPassword = (catchAsync(async (req, res, next) => {
-    const {email} = req.body
-    if (!email) 
+    const {
+        email
+    } = req.body
+    if (!email)
         return next(new AppError('Please provide your email address!', 404))
-    
-    if (!(await UserModel.exists({ email }))) {
+
+    if (!(await UserModel.exists({
+            email
+        }))) {
         return next(new AppError('This email doesn\'t belong to any account! Check your email again.', 404))
     }
 }))

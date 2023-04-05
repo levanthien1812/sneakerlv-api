@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         minLength: [8, 'Password must be at least 8 characters!'],
-        maxLength: [20, 'Password must not be longer than 20 characters!'],
+        maxLength: [30, 'Password must not be longer than 30 characters!'],
         required: [true, 'Please provide your password!']
     },
     address: {
@@ -40,6 +40,10 @@ const UserSchema = new mongoose.Schema({
             values: ['female', 'male', 'other'],
             default: 'femail'
         }
+    },
+    isGoogleAccount: {
+        type: Boolean,
+        default: false
     },
     passwordConfirm: {
         type: String,

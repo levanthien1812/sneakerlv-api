@@ -1,5 +1,6 @@
 import express from 'express'
 import {
+    createGoogleUser,
     isLoggedIn,
     logIn,
     logOut,
@@ -17,6 +18,7 @@ import {
 const userRouter = express.Router()
 
 userRouter.route('/sign-up').post(signUp)
+userRouter.route('/create-google-user').post(createGoogleUser)
 userRouter.route('/log-in').post(logIn)
 userRouter.route('/log-out').post(logOut)
 
