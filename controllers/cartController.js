@@ -4,10 +4,12 @@ import Cart from '../models/cart.js'
 import Sneaker from '../models/sneaker.js'
 
 export const getAllCarts = catchAsync(async (req, res, next) => {
+    const limit = req.query.quantity || Infinity
+    
     const carts = await Cart.find({
         user: req.user._id,
         active: true
-    })
+    }).sort({'createdAt': -1}).limit(limit)
 
     return res.status(200).json({
         status: 'success',

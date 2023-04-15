@@ -67,6 +67,15 @@ export const createSneaker = catchAsync(async (req, res, next) => {
     const sneakerReq = req.body
     const newSneaker = await Sneaker.create(sneakerReq)
 
+    if (!newSneaker.defaultCategory) {
+        const defaultCategory = await sneakerCategory.findOne({
+            sneaker: req.body.id,
+            isDefault: true
+        })
+        newSneaker.defaultCategory = defaultCategory
+        newSneaker.save()
+    }
+
     if (newSneaker) {
         res.status(200).json({
             status: 'success',

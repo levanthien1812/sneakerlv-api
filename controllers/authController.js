@@ -55,9 +55,11 @@ export const createGoogleUser = catchAsync(async (req, res, next) => {
             passwordConfirm: email,
             isGoogleAccount: true
         })
-    }
 
-    createSendToken(newUser, res)
+        createSendToken(newUser, res)
+    } else {
+        createSendToken(user, res)
+    }
 })
 
 export const logIn = catchAsync(async (req, res, next) => {

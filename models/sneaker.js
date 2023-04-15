@@ -22,6 +22,10 @@ const SneakerSchema = new Schema({
         required: true
     },
     description: String,
+    defaultCategory: {
+        type: Schema.Types.ObjectId,
+        ref: 'SneakerCategory'
+    },
     favorites: [{
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -37,6 +41,11 @@ const SneakerSchema = new Schema({
 
 SneakerSchema.pre('save', function(next) {
     this.slug = slugify(this.name, {lower: true})
+    next()
+})
+
+SneakerSchema.pre(/^find/, function (next) {
+    this.populate('brand')
     next()
 })
 
