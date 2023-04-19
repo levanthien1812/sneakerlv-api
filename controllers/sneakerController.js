@@ -67,14 +67,14 @@ export const createSneaker = catchAsync(async (req, res, next) => {
     const sneakerReq = req.body
     const newSneaker = await Sneaker.create(sneakerReq)
 
-    if (!newSneaker.defaultCategory) {
-        const defaultCategory = await sneakerCategory.findOne({
-            sneaker: req.body.id,
-            isDefault: true
-        })
-        newSneaker.defaultCategory = defaultCategory
-        newSneaker.save()
-    }
+    // if (!newSneaker.defaultCategory) {
+    //     const defaultCategory = await sneakerCategory.findOne({
+    //         sneaker: req.body.id,
+    //         isDefault: true
+    //     })
+    //     newSneaker.defaultCategory = defaultCategory
+    //     newSneaker.save()
+    // }
 
     if (newSneaker) {
         res.status(200).json({
@@ -110,19 +110,25 @@ export const getSneakers = catchAsync(async (req, res, next) => {
 })
 
 export const getSneaker = catchAsync(async (req, res, next) => {
-    const sneaker = await Sneaker.find({
+    const sneaker = await Sneaker.findOne({
         slug: req.params.slug
     })
 
-    const sneakerCategories = await sneakerCategories.find({
-        sneaker: sneaker.id
+    const categories = await sneakerCategory.find({
+        sneaker: sneaker._id
     })
+
+    const related = await Sneaker.find({
+        brand: sneaker.brand, 
+        id: {$ne: sneaker.id}
+    }).limit(10)
 
     return res.status(200).json({
         status: 'success',
         data: {
             sneaker,
-            sneakerCategories
+            categories,
+            related
         }
     })
 })

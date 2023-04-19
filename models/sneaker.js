@@ -16,6 +16,7 @@ const SneakerSchema = new Schema({
         type: String,
         require: [true, 'Please provide the cover image of sneaker!']
     },
+    images: [String],
     brand: {
         type: Schema.Types.ObjectId,
         ref: 'Brand',
@@ -36,6 +37,10 @@ const SneakerSchema = new Schema({
         min: 0,
         max: 5,
     },
+    totalSold: {
+        type: Number,
+        default: 0
+    },
     slug: String,
 })
 
@@ -46,6 +51,8 @@ SneakerSchema.pre('save', function(next) {
 
 SneakerSchema.pre(/^find/, function (next) {
     this.populate('brand')
+    // Calculate total quantity sold
+    // According to Order data
     next()
 })
 

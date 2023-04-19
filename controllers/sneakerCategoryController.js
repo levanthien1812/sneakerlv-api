@@ -3,6 +3,7 @@ import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/appError.js";
 import multer from "multer";
 import fse from 'fs-extra'
+import Sneaker from "../models/sneaker.js";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -54,5 +55,18 @@ export const createSneakerCategory = catchAsync(async (req, res, next) => {
     return res.status(200).json({
         status: 'success',
         data: category
+    })
+})
+
+export const getCategoryBySneaker = catchAsync(async (req, res, next) => {
+    const { slug } = req.params
+    const sneaker = await Sneaker.findOne({ slug })
+    if (!sneaker) {
+        return new AppError("Can not find this sneaker!", 404)
+    }
+    const categories = await sneakerCategory.findOne({ sneaker: sneaker.id })
+    return res.status(200).json({
+        status: "success",
+        data: categories
     })
 })
