@@ -23,6 +23,8 @@ import {
 } from "../controllers/cartController.js";
 import {
   createSneakerCategory,
+  deleteExcept,
+  getCategoriesBySneaker,
   uploadCategoryImage
 } from "../controllers/sneakerCategoryController.js";
 
@@ -41,6 +43,9 @@ sneakerRouter
   .patch(isLoggedIn, updateSneaker)
   .delete(isLoggedIn, deleteSneaker)
   .post(isLoggedIn, restrictsTo('customer'), createCart)
+
+sneakerRouter
+  .route("/:slug/categories").get(getCategoriesBySneaker).delete(deleteExcept)
 
 sneakerRouter
   .route("/:slug/favorite")

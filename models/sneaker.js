@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 import slugify from "slugify"
 const Schema = mongoose.Schema
+import SneakerCategory from "./sneakerCategory.js"
 
 const SneakerSchema = new Schema({
     id: {
@@ -41,11 +42,20 @@ const SneakerSchema = new Schema({
         type: Number,
         default: 0
     },
+    price: {
+        type: Object,
+        default: {
+            min: 0,
+            max: 0
+        }
+    },
     slug: String,
 })
 
-SneakerSchema.pre('save', function(next) {
-    this.slug = slugify(this.name, {lower: true})
+SneakerSchema.pre('save', function (next) {
+    this.slug = slugify(this.name, {
+        lower: true
+    })
     next()
 })
 

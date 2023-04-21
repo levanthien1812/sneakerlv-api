@@ -102,6 +102,24 @@ export const getSneakers = catchAsync(async (req, res, next) => {
     let features = (new ReadFeatures(sneakersQuery, req.query)).filter().sort().paginate()
     const sneakers = await features.query
 
+    // find min and max price
+    sneakers.forEach(async snk => {
+        const minPriceSneaker = await sneakerCategory.findOne({
+            sneaker: snk._id
+        }).sort('price')
+        const maxPriceSneaker = await sneakerCategory.findOne({
+            sneaker: snk._id
+        }).sort('-price')
+
+        if (minPriceSneaker && minPriceSneaker) {
+            snk.price = {
+                min: minPriceSneaker.price,
+                max: maxPriceSneaker.price
+            }
+        }
+        await snk.save()
+    })
+
     return res.status(200).json({
         status: 'success',
         quantity: sneakers.length,
@@ -119,8 +137,10 @@ export const getSneaker = catchAsync(async (req, res, next) => {
     })
 
     const related = await Sneaker.find({
-        brand: sneaker.brand, 
-        id: {$ne: sneaker.id}
+        brand: sneaker.brand,
+        id: {
+            $ne: sneaker.id
+        }
     }).limit(10)
 
     return res.status(200).json({

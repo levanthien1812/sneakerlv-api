@@ -4,6 +4,7 @@ import AppError from "../utils/appError.js";
 import multer from "multer";
 import fse from 'fs-extra'
 import Sneaker from "../models/sneaker.js";
+import sneaker from "../models/sneaker.js";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -58,15 +59,32 @@ export const createSneakerCategory = catchAsync(async (req, res, next) => {
     })
 })
 
-export const getCategoryBySneaker = catchAsync(async (req, res, next) => {
-    const { slug } = req.params
-    const sneaker = await Sneaker.findOne({ slug })
+export const getCategoriesBySneaker = catchAsync(async (req, res, next) => {
+    const {
+        slug
+    } = req.params
+    const sneaker = await Sneaker.findOne({
+        slug
+    })
     if (!sneaker) {
         return new AppError("Can not find this sneaker!", 404)
     }
-    const categories = await sneakerCategory.findOne({ sneaker: sneaker.id })
+    const categories = await sneakerCategory.find({
+        sneaker: sneaker._id
+    })
     return res.status(200).json({
         status: "success",
         data: categories
     })
+})
+
+export const deleteExcept = catchAsync(async (req, res, next) => {
+    const sneaker = await Sneaker.findOne({
+        slug: req.params.slug
+    })
+    const price = await sneakerCategory.findOne({
+        sneaker: sneaker._id
+    }).sort('-price')
+
+    res.json(price.price)
 })
