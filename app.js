@@ -14,7 +14,7 @@ import cors from 'cors'
 
 const app = express()
 
-app.use(cors())
+app.use(cors({credentials: true, origin: true}))
 
 // Body-parser and cookie-parser
 app.use(bodyParser.json())

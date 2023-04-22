@@ -15,10 +15,12 @@ const signToken = id => {
 const createSendToken = (user, res) => {
     const token = signToken(user._id)
 
-    res.cookie('jwt', token, {
-        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 3600 * 1000),
-        httpOnly: true
-    })
+    // res.cookie('jwt', token, {
+    //     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 3600 * 1000),
+    //     domain: 'localhost',
+    //     path: '/',
+    //     secure: false,
+    // })
 
     user.password = undefined
 
@@ -27,7 +29,7 @@ const createSendToken = (user, res) => {
         token,
         data: {
             user
-        }
+        },
     })
 }
 
@@ -105,7 +107,7 @@ export const isLoggedIn = catchAsync(async (req, res, next) => {
     } else if (req.cookies.jwt) {
         token = req.cookies.jwt
     } else {
-        return next(new AppError('You are not logged in! Please log in to access.', 400))
+        return next(new AppError(token, 400))
     }
 
     // Check if token is valid

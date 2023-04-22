@@ -149,7 +149,7 @@ export const getSneaker = catchAsync(async (req, res, next) => {
             sneaker,
             categories,
             related
-        }
+        },
     })
 })
 

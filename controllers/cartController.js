@@ -5,11 +5,13 @@ import Sneaker from '../models/sneaker.js'
 
 export const getAllCarts = catchAsync(async (req, res, next) => {
     const limit = req.query.quantity || Infinity
-    
+
     const carts = await Cart.find({
         user: req.user._id,
         active: true
-    }).sort({'createdAt': -1}).limit(limit)
+    }).sort({
+        'createdAt': -1
+    }).limit(limit)
 
     return res.status(200).json({
         status: 'success',
@@ -19,27 +21,31 @@ export const getAllCarts = catchAsync(async (req, res, next) => {
 })
 
 export const createCart = catchAsync(async (req, res, next) => {
-    const sneaker = await Sneaker.findOne({
-        slug: req.params.slug
-    })
-    const cartCheck = await Cart.findOne({
-        sneaker: sneaker._id,
+    const {
+        sneaker,
+        category,
+        quantity
+    } = req.body
+    const existingSneaker = await Sneaker.findById(sneaker)
+    if (!existingSneaker) return new AppError("This sneaker is not available!")
+
+    const existingCart = await Cart.findOne({
         user: req.user._id,
-        size: req.body.size
+        category
     })
     let cart
-    if (cartCheck) {
-        cart = await Cart.findByIdAndUpdate(cartCheck._id, {
-            quantity: cartCheck.quantity + req.body.quantity
+    if (existingCart) {
+        cart = await Cart.findByIdAndUpdate(existingCart._id, {
+            quantity: existingCart.quantity + quantity
         }, {
             new: true
         })
     } else {
         cart = await Cart.create({
-            sneaker: sneaker._id,
             user: req.user._id,
-            size: req.body.size,
-            quantity: req.body.quantity
+            quantity,
+            category,
+            sneaker
         })
     }
 
@@ -64,18 +70,21 @@ export const deleteCarts = catchAsync(async (req, res, next) => {
 })
 
 export const updateCart = catchAsync(async (req, res, next) => {
-    const {quantity, size} = req.body
+    const {
+        quantity,
+        size
+    } = req.body
     const cartToUpdate = await Cart.findById(req.params.id)
 
     if (quantity) cartToUpdate.quantity = quantity
     if (size) cartToUpdate.size = size
-    
+
     if (cartToUpdate.quantity === 0) {
         await Cart.findByIdAndDelete(cartToUpdate.id)
     } else {
         await cartToUpdate.save()
     }
-    
+
     return res.status(200).json({
         status: 'success',
         data: cartToUpdate

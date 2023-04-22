@@ -10,9 +10,9 @@ const CartSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Sneaker'
     },
-    size: {
-        type: Number,
-        require: [true, "Please select the size of sneaker!"]
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SneakerCategory'
     },
     quantity: {
         type: Number,
