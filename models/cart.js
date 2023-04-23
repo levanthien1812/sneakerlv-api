@@ -32,9 +32,10 @@ CartSchema.pre('save',async function (next) {
     next()
 })
 
-// CartSchema.pre(/^find/, function (next) {
-//     this.populate('sneaker')
-//     next()
-// })
+CartSchema.pre(/^find/, function (next) {
+    this.populate('sneaker', '_id id slug name coverImage -brand')
+    this.populate('category', '_id price image')
+    next()
+})
 
 export default mongoose.model('Cart', CartSchema)
