@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import Sneaker from './sneaker.js'
+import sneakerCategory from "./sneakerCategory.js"
 
 const CartSchema = new mongoose.Schema({
     user: {
@@ -20,6 +21,10 @@ const CartSchema = new mongoose.Schema({
         min: 1
     },
     price: Number,
+    isChosen: {
+        type: Boolean,
+        default: false
+    },
     active: {
         type: Boolean,
         default: true
@@ -27,14 +32,14 @@ const CartSchema = new mongoose.Schema({
 })
 
 CartSchema.pre('save',async function (next) {
-    const sneaker = await Sneaker.findById(this.sneaker)
-    this.price = sneaker.promotionalPrice * this.quantity
+    const category = await sneakerCategory.findById(this.category._id)
+    this.price = category.price * this.quantity
     next()
 })
 
-CartSchema.pre(/^find/, function (next) {
-    this.populate('sneaker', '_id id slug name coverImage -brand')
-    this.populate('category', '_id price image')
+CartSchema.pre(/^find/,async function (next) {
+    this.populate('sneaker', '_id id slug name coverImage brand rating')
+    this.populate('category')
     next()
 })
 

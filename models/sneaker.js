@@ -38,6 +38,10 @@ const SneakerSchema = new Schema({
         min: 0,
         max: 5,
     },
+    ratingQuantity: {
+        type: Number,
+        default: 0,
+    },
     totalSold: {
         type: Number,
         default: 0

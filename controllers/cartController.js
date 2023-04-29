@@ -21,40 +21,44 @@ export const getAllCarts = catchAsync(async (req, res, next) => {
 })
 
 export const createCart = catchAsync(async (req, res, next) => {
-    const {
-        sneaker,
-        category,
-        quantity
-    } = req.body
-    const existingSneaker = await Sneaker.findById(sneaker)
-    if (!existingSneaker) return new AppError("This sneaker is not available!")
-
-    const existingCart = await Cart.findOne({
-        user: req.user._id,
-        category
-    })
-    let cart
-    if (existingCart) {
-        cart = await Cart.findByIdAndUpdate(existingCart._id, {
-            quantity: existingCart.quantity + quantity
-        }, {
-            new: true
-        })
-    } else {
-        cart = await Cart.create({
-            user: req.user._id,
-            quantity,
+    const cartItemsReq = req.body.cartItems || []
+    await Promise.all(cartItemsReq.map(async cartItem => {
+        const {
+            sneaker,
             category,
-            sneaker
-        })
-    }
+            quantity
+        } = cartItem
+        const existingSneaker = await Sneaker.findById(sneaker._id)
+        if (!existingSneaker) return new AppError("This sneaker is not available!")
 
-    if (cart) {
-        return res.status(200).json({
-            status: 'success',
-            data: cart,
+        const existingCartItem = await Cart.findOne({
+            user: req.user._id,
+            category: category._id
         })
-    }
+
+        let cart
+        if (existingCartItem) {
+            cart = await Cart.findByIdAndUpdate(existingCartItem._id, {
+                quantity: existingCartItem.quantity + quantity
+            }, {
+                new: true
+            })
+        } else {
+            cart = await Cart.create({
+                user: req.user._id,
+                quantity,
+                category: category._id,
+                sneaker: sneaker._id
+            })
+        }
+
+        if (cart) {
+            return res.status(200).json({
+                status: 'success',
+                data: cart,
+            })
+        }
+    }))
 })
 
 export const deleteCarts = catchAsync(async (req, res, next) => {
