@@ -19,9 +19,6 @@ import {
 } from "../controllers/sneakerController.js"
 
 import {
-  createCart
-} from "../controllers/cartController.js";
-import {
   createSneakerCategory,
   deleteExcept,
   getCategoriesBySneaker,
@@ -42,7 +39,6 @@ sneakerRouter
   .get(getSneaker)
   .patch(isLoggedIn, updateSneaker)
   .delete(isLoggedIn, deleteSneaker)
-  .post(isLoggedIn, restrictsTo('customer'), createCart)
 
 sneakerRouter
   .route("/:slug/categories").get(getCategoriesBySneaker).delete(deleteExcept)

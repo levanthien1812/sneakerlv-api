@@ -20,8 +20,17 @@ export const getAllCarts = catchAsync(async (req, res, next) => {
     })
 })
 
-export const createCart = catchAsync(async (req, res, next) => {
+export const saveCart = catchAsync(async (req, res, next) => {
     const cartItemsReq = req.body.cartItems || []
+
+    console.log(req.body)
+
+    await Cart.deleteMany({
+        user: req.user._id
+    })
+
+    const cartItemsRes = []
+
     await Promise.all(cartItemsReq.map(async cartItem => {
         const {
             sneaker,
@@ -31,34 +40,29 @@ export const createCart = catchAsync(async (req, res, next) => {
         const existingSneaker = await Sneaker.findById(sneaker._id)
         if (!existingSneaker) return new AppError("This sneaker is not available!")
 
-        const existingCartItem = await Cart.findOne({
+        let newCartItem = await Cart.create({
             user: req.user._id,
-            category: category._id
+            quantity,
+            category: category._id,
+            sneaker: sneaker._id
         })
 
-        let cart
-        if (existingCartItem) {
-            cart = await Cart.findByIdAndUpdate(existingCartItem._id, {
-                quantity: existingCartItem.quantity + quantity
-            }, {
-                new: true
-            })
-        } else {
-            cart = await Cart.create({
-                user: req.user._id,
-                quantity,
-                category: category._id,
-                sneaker: sneaker._id
+        if (!newCartItem) {
+            return res.status(500).json({
+                status: 'fail',
+                message: "fail to save item to cart"
             })
         }
 
-        if (cart) {
-            return res.status(200).json({
-                status: 'success',
-                data: cart,
-            })
-        }
+        cartItemsRes.push(newCartItem)
     }))
+
+    return res.status(200).json({
+        status: 'success',
+        data: {
+            cartItems: cartItemsRes
+        }
+    })
 })
 
 export const deleteCarts = catchAsync(async (req, res, next) => {
