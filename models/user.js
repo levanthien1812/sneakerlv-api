@@ -38,7 +38,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         enum: {
             values: ['female', 'male', 'other'],
-            default: 'femail'
+            default: 'female'
         }
     },
     isGoogleAccount: {
@@ -54,6 +54,10 @@ const UserSchema = new mongoose.Schema({
             },
             message: 'Your confirmed password is not correct!'
         }
+    },
+    verifyCode: {
+        type: Number,
+        default: 0
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
