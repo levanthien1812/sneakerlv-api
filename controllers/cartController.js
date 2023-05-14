@@ -23,7 +23,7 @@ export const getAllCarts = catchAsync(async (req, res, next) => {
 export const saveCart = catchAsync(async (req, res, next) => {
     const cartItemsReq = req.body.cartItems || []
 
-    console.log(req.body)
+    // console.log(req.body)
 
     await Cart.deleteMany({
         user: req.user._id

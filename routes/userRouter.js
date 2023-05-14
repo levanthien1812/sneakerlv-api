@@ -10,6 +10,7 @@ import {
 } from "../controllers/authController.js";
 import {
   createShippingInfo,
+  deleteAllShippingInfo,
   deleteShippingInfo,
   getShippingInfo,
   getUser,
@@ -27,12 +28,13 @@ userRouter.route("/log-in").post(logIn);
 userRouter.route("/log-out").post(logOut);
 
 userRouter
-  .route("/shipping-info")
+  .route("/account/addresses")
   .post(isLoggedIn, createShippingInfo)
-  .get(isLoggedIn, getShippingInfo);
+  .get(isLoggedIn, getShippingInfo)
+  .delete(deleteAllShippingInfo)
 
 userRouter
-  .route("/shipping-info/:id")
+  .route("/account/addresses/:id")
   .patch(isLoggedIn, updateShippingInfo)
   .delete(isLoggedIn, deleteShippingInfo);
 
@@ -40,6 +42,7 @@ userRouter
   .route("/account/profile")
   .get(isLoggedIn, getUser)
   .patch(isLoggedIn, uploadUserPhoto, updateUser);
+
 userRouter.route("/account/update-password").post(isLoggedIn, updatePassword);
 
 export default userRouter;

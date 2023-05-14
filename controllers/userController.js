@@ -36,8 +36,8 @@ export const uploadUserPhoto = (req, res, next) => {
     if (err) {
       next(err);
     } else {
-      if (req.files && req.files.photo) {
-        req.body.photo = req.files.coverImage[0].filename;
+      if (req.file) {
+        req.body.photo = req.file.filename;
       }
       next();
     }
@@ -67,7 +67,7 @@ export const updateUser = catchAsync(async (req, res, next) => {
 });
 
 export const createShippingInfo = catchAsync(async (req, res, next) => {
-  const { name, address, phoneNum } = req.body;
+  const { address, phoneNum } = req.body;
   if (
     await ShippingInfo.exists({
       address: address,
@@ -77,15 +77,15 @@ export const createShippingInfo = catchAsync(async (req, res, next) => {
     return next(new AppError("Duplicated shipping address! Try again."));
 
   const newShippingInfo = await ShippingInfo.create({
+    ...req.body,
     user: req.user._id,
-    name,
-    address,
-    phoneNum,
   });
+
+  console.log(newShippingInfo)
 
   return res.status(200).json({
     status: "success",
-    data: newShippingInfo,
+    data: JSON.stringify(newShippingInfo),
   });
 });
 
@@ -139,3 +139,7 @@ export const getUser = catchAsync(async (req, res, next) => {
     data: user,
   });
 });
+
+export const deleteAllShippingInfo = catchAsync(async (req, res, next) => {
+  await ShippingInfo.deleteMany()
+})

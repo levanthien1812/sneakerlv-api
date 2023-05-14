@@ -41,6 +41,10 @@ const UserSchema = new mongoose.Schema({
             default: 'female'
         }
     },
+    birthday: {
+        type: Date,
+        default: Date.now()
+    },
     isGoogleAccount: {
         type: Boolean,
         default: false
