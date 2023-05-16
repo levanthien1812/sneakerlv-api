@@ -67,7 +67,23 @@ export const updateUser = catchAsync(async (req, res, next) => {
 });
 
 export const createShippingInfo = catchAsync(async (req, res, next) => {
-  const { address, phoneNum } = req.body;
+  const { address, phoneNum, isUpdate } = req.body;
+  console.log(req.body)
+
+  if (isUpdate) {
+    const updatedAddress = await ShippingInfo.findByIdAndUpdate(
+      req.body.id,
+      { ...req.body },
+      { new: true }
+    );
+    console.log(updatedAddress)
+
+    return res.status(200).json({
+      status: "success",
+      data: updatedAddress,
+    });
+  }
+
   if (
     await ShippingInfo.exists({
       address: address,
@@ -81,7 +97,7 @@ export const createShippingInfo = catchAsync(async (req, res, next) => {
     user: req.user._id,
   });
 
-  console.log(newShippingInfo)
+  console.log(newShippingInfo);
 
   return res.status(200).json({
     status: "success",
@@ -141,5 +157,5 @@ export const getUser = catchAsync(async (req, res, next) => {
 });
 
 export const deleteAllShippingInfo = catchAsync(async (req, res, next) => {
-  await ShippingInfo.deleteMany()
-})
+  await ShippingInfo.deleteMany();
+});
